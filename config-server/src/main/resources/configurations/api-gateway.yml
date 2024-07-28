@@ -5,13 +5,6 @@ spring:
         locator:
           enabled: true
       routes:
-        #        - id: catalog
-        #          uri: http://localhost:8090
-        #          predicates:
-        #            - Path=/product/**, /category/**
-        #          filters:
-        #            - AuthFilter
-
         - id: job-service
           uri: http://localhost:8091
           predicates:
@@ -23,6 +16,13 @@ spring:
           uri: http://localhost:8092
           predicates:
             - Path=/api/v1/auth/**
+
+        - id: user-profile-service
+          uri: http://localhost:8093
+          predicates:
+            - Path=/api/v1/user-profiles/**
+          filters:
+            - AuthFilter
 
 eureka:
   client:
