@@ -1,19 +1,22 @@
 package com.find_jobs.user_profile_service.service;
 
+import com.find_jobs.user_profile_service.client.UserServiceClient;
+import com.find_jobs.user_profile_service.constant.Constant;
 import com.find_jobs.user_profile_service.dto.request.CareerHistoryDTO;
 import com.find_jobs.user_profile_service.dto.request.EducationDTO;
 import com.find_jobs.user_profile_service.dto.request.UserProfileRequestDTO;
-import com.find_jobs.user_profile_service.entity.Address;
-import com.find_jobs.user_profile_service.entity.CareerHistory;
-import com.find_jobs.user_profile_service.entity.Education;
-import com.find_jobs.user_profile_service.entity.UserProfile;
+import com.find_jobs.user_profile_service.entity.*;
+import com.find_jobs.user_profile_service.exception.NotFoundException;
 import com.find_jobs.user_profile_service.repository.AddressRepository;
 import com.find_jobs.user_profile_service.repository.CareerHistoryRepository;
 import com.find_jobs.user_profile_service.repository.EducationRepository;
 import com.find_jobs.user_profile_service.repository.UserProfileRepository;
+import com.find_jobs.user_profile_service.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 public class UserProfileService {
@@ -29,9 +32,19 @@ public class UserProfileService {
     @Autowired
     private EducationRepository educationRepository;
 
+    @Autowired
+    private UserServiceClient userServiceClient;
+
     @Transactional
-    public UserProfile createUserProfile(UserProfileRequestDTO dto) {
+    public Response<Object> createUserProfile(UserProfileRequestDTO dto) {
+        Response<User> userCurrentlyLogin = userServiceClient.getUserLogin();
+
         UserProfile userProfile = new UserProfile();
+
+        if (!Objects.equals(userCurrentlyLogin.getData().getId(), dto.getUserId())) {
+            throw new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE);
+        }
+
         userProfile.setUserId(dto.getUserId());
         userProfile.setPersonalSummary(dto.getPersonalSummary());
         userProfile.setCvUrl(dto.getCvUrl());
@@ -63,7 +76,12 @@ public class UserProfileService {
             }
         }
 
-        return savedUserProfile;
+        return Response.builder()
+                .responseCode(Constant.Response.SUCCESS_CODE)
+                .responseMessage(Constant.Response.SUCCESS_MESSAGE)
+                .data(savedUserProfile)
+                .build();
+
     }
 
     private static Education getEducation(EducationDTO eduDto, UserProfile savedUserProfile) {

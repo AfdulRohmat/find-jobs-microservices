@@ -5,7 +5,9 @@ import com.find_jobs.auth_service.dto.request.UserRequest;
 import com.find_jobs.auth_service.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +31,11 @@ public class UserController {
     @GetMapping(value = "/validateAccessToken")
     public ResponseEntity<Object> validateAccessToken(@RequestParam(value = "accessToken", defaultValue = "") String accessToken) {
         return ResponseEntity.ok(userService.validateAccessToken(accessToken));
+    }
+
+    @GetMapping(value = "/user")
+    public ResponseEntity<Object> getUser() {
+        return ResponseEntity.ok(userService.getUser());
     }
 
     @GetMapping(value = "/test")

@@ -25,11 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -121,6 +119,23 @@ public class UserService {
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
                 .responseMessage(Constant.Response.SUCCESS_VALID_TOKEN_MESSAGE)
+                .build();
+    }
+
+    @Transactional
+    public Response<Object> getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
+        Long userId = userDetails.getId();
+
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
+
+        return Response.builder()
+                .responseCode(Constant.Response.SUCCESS_CODE)
+                .responseMessage(Constant.Response.SUCCESS_VALID_TOKEN_MESSAGE)
+                .data(user)
                 .build();
     }
 
