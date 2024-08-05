@@ -1,0 +1,23 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultzone: http://localhost:8761/eureka/
+
+server:
+  port: 8091
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/job-portal-db-springboot
+    username: postgres
+    password: postgreSQLPassword2023@
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
