@@ -1,5 +1,6 @@
 package com.find_jobs.auth_service.dto.response;
 
+import com.find_jobs.auth_service.entity.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +17,6 @@ public class LoginResponse {
     private String accessToken;
     private String tokenType;
     private int expiresIn;
-    private String role;
+    private Role role;
 
 }

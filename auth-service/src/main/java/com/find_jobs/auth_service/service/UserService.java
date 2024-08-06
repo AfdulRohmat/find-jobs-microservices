@@ -65,9 +65,9 @@ public class UserService {
             throw new DataExistException(Constant.Message.EXIST_DATA_MESSAGE);
         }
 
-        if (!isValid(userRole, userRequest.getRole())) {
-            throw new BadRequestCustomException(Constant.Message.FORBIDDEN_REQUEST_MESSAGE.replace("{value}", "role"));
-        }
+//        if (!isValid(userRole, String.valueOf(userRequest.getRole()))) {
+//            throw new BadRequestCustomException(Constant.Message.FORBIDDEN_REQUEST_MESSAGE.replace("{value}", "role"));
+//        }
 
         if (!isValid(userGender, userRequest.getGender())) {
             throw new BadRequestCustomException(Constant.Message.FORBIDDEN_REQUEST_MESSAGE.replace("{value}", "gender"));

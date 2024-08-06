@@ -5,6 +5,7 @@ import com.find_jobs.user_profile_service.service.UserProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -80,6 +81,7 @@ public class UserProfileController {
     @GetMapping(value = "/",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> getUserProfile(@RequestParam(name = "userId", defaultValue = "") Long userId) {
         return ResponseEntity.ok(userProfileService.getUserProfile(userId));
     }

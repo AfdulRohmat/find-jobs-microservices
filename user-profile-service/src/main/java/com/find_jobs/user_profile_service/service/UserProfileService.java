@@ -236,7 +236,7 @@ public class UserProfileService {
 
     @Transactional
     public Response<Object> getUserProfile(Long userId) {
-        UserProfile userProfile = userProfileRepository.findById(userId)
+        UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
         Address address = addressRepository.findByUserProfileId(userProfile.getId()).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));

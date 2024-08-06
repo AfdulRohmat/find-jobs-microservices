@@ -1,6 +1,7 @@
 package com.find_jobs.auth_service.dto.request;
 
 import com.find_jobs.auth_service.constant.Constant;
+import com.find_jobs.auth_service.entity.Role;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -25,8 +26,8 @@ public class UserRequest {
     @NotBlank(message = "Last name is mandatory")
     private String lastName;
 
-    @NotBlank(message = "Role is mandatory")
-    private String role;
+    @NotNull(message = "Role is mandatory")
+    private Role role;
 
     @NotBlank(message = "Gender is mandatory, please fill it!")
     @NotNull(message = "Gender is mandatory, please fill it!")
