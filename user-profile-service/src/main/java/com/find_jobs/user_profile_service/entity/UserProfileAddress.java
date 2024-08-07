@@ -11,7 +11,7 @@ import lombok.*;
 @Entity
 @Builder
 @Table(name = "address")
-public class Address {
+public class UserProfileAddress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

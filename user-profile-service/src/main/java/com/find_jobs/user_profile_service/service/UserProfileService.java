@@ -95,21 +95,21 @@ public class UserProfileService {
         UserProfile userProfile = userProfileRepository.findById(dto.getUserProfileId())
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
-        Address address = new Address();
+        UserProfileAddress userProfileAddress = new UserProfileAddress();
 
-        address.setUserProfileId(userProfile.getId());
-        address.setStreet(dto.getStreet());
-        address.setCity(dto.getCity());
-        address.setState(dto.getState());
-        address.setPostalCode(dto.getPostalCode());
-        address.setCountry(dto.getCountry());
+        userProfileAddress.setUserProfileId(userProfile.getId());
+        userProfileAddress.setStreet(dto.getStreet());
+        userProfileAddress.setCity(dto.getCity());
+        userProfileAddress.setState(dto.getState());
+        userProfileAddress.setPostalCode(dto.getPostalCode());
+        userProfileAddress.setCountry(dto.getCountry());
 
-        Address savedAddress = addressRepository.save(address);
+        UserProfileAddress savedUserProfileAddress = addressRepository.save(userProfileAddress);
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
                 .responseMessage(Constant.Response.CREATE_SUCCESS_MESSAGE)
-                .data(savedAddress)
+                .data(savedUserProfileAddress)
                 .build();
     }
 
@@ -118,21 +118,21 @@ public class UserProfileService {
         UserProfile userProfile = userProfileRepository.findById(dto.getUserProfileId())
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
-        Address address = addressRepository.findById(id).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
+        UserProfileAddress userProfileAddress = addressRepository.findById(id).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
-        address.setUserProfileId(userProfile.getId());
-        address.setStreet(dto.getStreet());
-        address.setCity(dto.getCity());
-        address.setState(dto.getState());
-        address.setPostalCode(dto.getPostalCode());
-        address.setCountry(dto.getCountry());
+        userProfileAddress.setUserProfileId(userProfile.getId());
+        userProfileAddress.setStreet(dto.getStreet());
+        userProfileAddress.setCity(dto.getCity());
+        userProfileAddress.setState(dto.getState());
+        userProfileAddress.setPostalCode(dto.getPostalCode());
+        userProfileAddress.setCountry(dto.getCountry());
 
-        Address savedAddress = addressRepository.save(address);
+        UserProfileAddress savedUserProfileAddress = addressRepository.save(userProfileAddress);
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
                 .responseMessage(Constant.Response.UPDATE_SUCCESS_MESSAGE)
-                .data(savedAddress)
+                .data(savedUserProfileAddress)
                 .build();
     }
 
@@ -239,12 +239,12 @@ public class UserProfileService {
         UserProfile userProfile = userProfileRepository.findByUserId(userId)
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
-        Address address = addressRepository.findByUserProfileId(userProfile.getId()).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
+        UserProfileAddress userProfileAddress = addressRepository.findByUserProfileId(userProfile.getId()).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
         List<CareerHistory> careerHistories = careerHistoryRepository.findByUserProfileId(userProfile.getId());
         List<Education> educations = educationRepository.findByUserProfileId(userProfile.getId());
 
-        UserProfileResponseDTO userProfileResponseDTO = userProfileMapper.mapToUserProfileResponseDTO(userProfile, address, careerHistories, educations);
+        UserProfileResponseDTO userProfileResponseDTO = userProfileMapper.mapToUserProfileResponseDTO(userProfile, userProfileAddress, careerHistories, educations);
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)

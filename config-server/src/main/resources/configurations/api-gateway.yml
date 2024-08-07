@@ -24,6 +24,13 @@ spring:
           filters:
             - AuthFilter
 
+        - id: company-service
+          uri: http://localhost:8094
+          predicates:
+            - Path=/api/v1/company-profiles/**
+          filters:
+            - AuthFilter
+
 eureka:
   client:
     register-with-eureka: true

@@ -8,14 +8,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="job-service" />
-        <module name="api-gateway" />
         <module name="config-server" />
         <module name="auth-service" />
+        <module name="api-gateway" />
+        <module name="company-service" />
         <module name="user-profile-service" />
         <module name="eureka-server" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="company-profile" target="21" />
       <module name="eureka-discovery-server" target="21" />
     </bytecodeTargetLevel>
   </component>
@@ -23,6 +25,8 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="company-profile" options="-parameters" />
+      <module name="company-service" options="-parameters" />
       <module name="config-server" options="-parameters" />
       <module name="eureka-discovery-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />

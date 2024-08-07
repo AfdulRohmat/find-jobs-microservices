@@ -1,10 +1,9 @@
 package com.find_jobs.user_profile_service.service.mapper;
 
-import com.find_jobs.user_profile_service.dto.request.AddressDTO;
 import com.find_jobs.user_profile_service.dto.request.CareerHistoryDTO;
 import com.find_jobs.user_profile_service.dto.request.EducationDTO;
 import com.find_jobs.user_profile_service.dto.response.UserProfileResponseDTO;
-import com.find_jobs.user_profile_service.entity.Address;
+import com.find_jobs.user_profile_service.entity.UserProfileAddress;
 import com.find_jobs.user_profile_service.entity.CareerHistory;
 import com.find_jobs.user_profile_service.entity.Education;
 import com.find_jobs.user_profile_service.entity.UserProfile;
@@ -44,13 +43,13 @@ public class UserProfileMapper {
         return careerHistory;
     }
 
-    public UserProfileResponseDTO mapToUserProfileResponseDTO(UserProfile userProfile, Address address,
+    public UserProfileResponseDTO mapToUserProfileResponseDTO(UserProfile userProfile, UserProfileAddress userProfileAddress,
                                                               List<CareerHistory> careerHistories, List<Education> educations) {
         return UserProfileResponseDTO.builder()
                 .id(userProfile.getId())
                 .userId(userProfile.getUserId())
                 .personalSummary(userProfile.getPersonalSummary())
-                .address(mapToAddressDTO(address))
+                .userProfileAddress(mapToAddressDTO(userProfileAddress))
                 .careerHistory(careerHistories.stream().map(this::mapToCareerHistoryDTO).collect(Collectors.toList()))
                 .education(educations.stream().map(this::mapToEducationDTO).collect(Collectors.toList()))
                 .cvUrl(userProfile.getCvUrl())
@@ -58,15 +57,15 @@ public class UserProfileMapper {
     }
 
 
-    private Address mapToAddressDTO(Address address) {
-        return Address.builder()
-                .id(address.getId())
-                .userProfileId(address.getUserProfileId())
-                .street(address.getStreet())
-                .city(address.getCity())
-                .state(address.getState())
-                .postalCode(address.getPostalCode())
-                .country(address.getCountry())
+    private UserProfileAddress mapToAddressDTO(UserProfileAddress userProfileAddress) {
+        return UserProfileAddress.builder()
+                .id(userProfileAddress.getId())
+                .userProfileId(userProfileAddress.getUserProfileId())
+                .street(userProfileAddress.getStreet())
+                .city(userProfileAddress.getCity())
+                .state(userProfileAddress.getState())
+                .postalCode(userProfileAddress.getPostalCode())
+                .country(userProfileAddress.getCountry())
                 .build();
     }
 
