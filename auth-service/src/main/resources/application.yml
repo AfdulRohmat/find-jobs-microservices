@@ -9,5 +9,5 @@ user:
   gender: Male|Female
 
 jwt:
-  secret: ======================Ll4Kcolnu=lL4dor7oh===========================
+  secret: mnTxowKDJQhC7FsH7gTqLz7Rpi2YHfXO7nFJc8P8tQRGdeVd9rXvUgEGeZDUmbHokXmLcty+guTv1M5ZOE3RUw==
   expirationMs: 900000 # 15 minutes

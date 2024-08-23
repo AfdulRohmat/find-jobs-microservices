@@ -7,12 +7,11 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Data
-public class LoginRequest {
+public class LoginRequestDTO {
 
-    @NotBlank(message = "Username is mandatory, please fill it!")
-    @NotNull(message = "Username mandatory, please fill it!")
-    @Pattern(regexp = Constant.Regex.ALPHANUMERIC, message = "Invalid format username")
-    private String username;
+    @NotBlank(message = "email is mandatory, please fill it!")
+    @NotNull(message = "email mandatory, please fill it!")
+    private String email;
 
     @NotBlank(message = "Password is mandatory, please fill it!")
     @NotNull(message = "Password mandatory, please fill it!")

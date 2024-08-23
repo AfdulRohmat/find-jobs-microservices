@@ -6,17 +6,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class LoginResponse {
+public class LoginResponseDTO {
 
     private Long userId;
     private String username;
+    private String email;
     private String accessToken;
-    private String tokenType;
-    private int expiresIn;
-    private Role role;
+    private List<String> role;
 
 }

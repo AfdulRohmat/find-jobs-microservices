@@ -14,10 +14,19 @@ public class UserProfileController {
     @Autowired
     private UserProfileService userProfileService;
 
+    @GetMapping(value = "/test",
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    @PreAuthorize("hasRole('APPLICANT')")
+    public ResponseEntity<Object> getTest() {
+        return ResponseEntity.ok("Success Test");
+    }
+
     @PostMapping(value = "/profile",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> addUserProfile(@RequestBody UserProfileRequestDTO userProfileRequestDTO) {
         return ResponseEntity.ok(userProfileService.addUserProfile(userProfileRequestDTO));
     }
@@ -26,6 +35,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> updateUserProfile(@PathVariable Long id, @RequestBody UserProfileRequestDTO userProfileRequestDTO) {
         return ResponseEntity.ok(userProfileService.updateUserProfile(id, userProfileRequestDTO));
     }
@@ -34,6 +44,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> addAddress(@RequestBody AddressDTO addressDTO) {
         return ResponseEntity.ok(userProfileService.addAddress(addressDTO));
     }
@@ -42,6 +53,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> updateAddress(@PathVariable Long id, @RequestBody AddressDTO addressDTO) {
         return ResponseEntity.ok(userProfileService.updateAddress(id, addressDTO));
     }
@@ -50,6 +62,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> addCareerHistory(@RequestBody CareerHistoryDTO careerHistoryDTO) {
         return ResponseEntity.ok(userProfileService.addCareerHistory(careerHistoryDTO));
     }
@@ -58,6 +71,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> updateCareerHistory(@PathVariable Long id, @RequestBody CareerHistoryDTO careerHistoryDTO) {
         return ResponseEntity.ok(userProfileService.updateCareerHistory(id, careerHistoryDTO));
     }
@@ -66,6 +80,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> addEducation(@RequestBody EducationDTO educationDTO) {
         return ResponseEntity.ok(userProfileService.addEducation(educationDTO));
     }
@@ -74,6 +89,7 @@ public class UserProfileController {
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
+    @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> updateEducation(@PathVariable Long id, @RequestBody EducationDTO educationDTO) {
         return ResponseEntity.ok(userProfileService.updateEducation(id, educationDTO));
     }
@@ -81,7 +97,7 @@ public class UserProfileController {
     @GetMapping(value = "/",
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
-    @PreAuthorize("hasRole('APPLICANT')")
+    @PreAuthorize("hasRole('ROLE_APPLICANT')")
     public ResponseEntity<Object> getUserProfile(@RequestParam(name = "userId", defaultValue = "") Long userId) {
         return ResponseEntity.ok(userProfileService.getUserProfile(userId));
     }

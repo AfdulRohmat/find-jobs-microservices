@@ -1,20 +1,18 @@
 package com.find_jobs.auth_service.entity;
 
+
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 public class User {
@@ -25,23 +23,17 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false, updatable = false)
     private String email;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
-
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    private String gender;
+    @Column(name = "is_deleted")
+    private Boolean isDeleted;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -51,9 +43,5 @@ public class User {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "last_login")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date lastLogin;
 
-    private Boolean isDeleted;
 }

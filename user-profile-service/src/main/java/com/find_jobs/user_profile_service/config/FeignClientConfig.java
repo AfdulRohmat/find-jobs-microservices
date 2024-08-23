@@ -16,7 +16,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class FeignClientConfig {
 
     @Bean
-    public RequestInterceptor requestInterceptor() {        return new RequestInterceptor() {
+    public RequestInterceptor requestInterceptor() {
+        return new RequestInterceptor() {
             @Override
             public void apply(RequestTemplate requestTemplate) {
                 final RequestAttributes requestAttributes =

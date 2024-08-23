@@ -1,6 +1,6 @@
 package com.find_jobs.user_profile_service.service;
 
-import com.find_jobs.user_profile_service.client.UserServiceClient;
+import com.find_jobs.user_profile_service.client.AuthServiceClient;
 import com.find_jobs.user_profile_service.constant.Constant;
 import com.find_jobs.user_profile_service.dto.request.AddressDTO;
 import com.find_jobs.user_profile_service.dto.request.CareerHistoryDTO;
@@ -38,14 +38,14 @@ public class UserProfileService {
     private EducationRepository educationRepository;
 
     @Autowired
-    private UserServiceClient userServiceClient;
+    private AuthServiceClient authServiceClient;
 
     @Autowired
     private UserProfileMapper userProfileMapper;
 
     @Transactional
     public Response<Object> addUserProfile(UserProfileRequestDTO dto) {
-        Response<User> userCurrentlyLogin = userServiceClient.getUserLogin();
+        Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
 
         UserProfile userProfile = new UserProfile();
 
@@ -68,7 +68,7 @@ public class UserProfileService {
 
     @Transactional
     public Response<Object> updateUserProfile(Long id, UserProfileRequestDTO dto) {
-        Response<User> userCurrentlyLogin = userServiceClient.getUserLogin();
+        Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
 
         UserProfile userProfile = userProfileRepository.findById(id).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 

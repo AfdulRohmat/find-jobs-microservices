@@ -4,32 +4,32 @@ spring:
       discovery:
         locator:
           enabled: true
-      routes:
-        - id: job-service
-          uri: http://localhost:8091
-          predicates:
-            - Path=/api/v1/jobs/**
-          filters:
-            - AuthFilter
-
-        - id: auth-service
-          uri: http://localhost:8092
-          predicates:
-            - Path=/api/v1/auth/**
-
-        - id: user-profile-service
-          uri: http://localhost:8093
-          predicates:
-            - Path=/api/v1/user-profiles/**
-          filters:
-            - AuthFilter
-
-        - id: company-service
-          uri: http://localhost:8094
-          predicates:
-            - Path=/api/v1/company-profiles/**
-          filters:
-            - AuthFilter
+#      routes:
+#        - id: job-service
+#          uri: http://localhost:8091
+#          predicates:
+#            - Path=/api/v1/jobs/**
+#          filters:
+#            - AuthFilter
+#
+#        - id: auth-service
+#          uri: http://localhost:8092
+#          predicates:
+#            - Path=/api/v1/auth/**
+#
+#        - id: user-profile-service
+#          uri: http://localhost:8093
+#          predicates:
+#            - Path=/api/v1/user-profiles/**
+#          filters:
+#            - AuthFilter
+#
+#        - id: company-service
+#          uri: http://localhost:8094
+#          predicates:
+#            - Path=/api/v1/company-profiles/**
+#          filters:
+#            - AuthFilter
 
 eureka:
   client:

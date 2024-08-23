@@ -15,6 +15,7 @@ public interface Constant {
 
     class Response {
         public static final int SUCCESS_CODE = 200;
+        public static final int ERROR_NO_AUTH_CODE = 400;
         public static final String SUCCESS_MESSAGE = "Success";
         public static final String SUCCESS_VALID_TOKEN_MESSAGE = "Access token valid";
     }
