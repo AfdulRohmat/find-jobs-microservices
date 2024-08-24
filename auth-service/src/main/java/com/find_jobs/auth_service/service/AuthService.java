@@ -119,10 +119,12 @@ public class AuthService {
                 .map(GrantedAuthority::getAuthority)
                 .toList();
 
+        User user = userRepository.findFirstByEmail(userDetails.getEmail()).orElseThrow(() -> new DataExistException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
+
         LoginResponseDTO loginResponseDTO = LoginResponseDTO.builder()
-                .userId(userDetails.getId())
-                .email(userDetails.getEmail())
-                .username(userDetails.getEmail())
+                .userId(user.getId())
+                .email(user.getEmail())
+                .username(user.getUsername())
                 .accessToken(jwt)
                 .role(roles)
                 .build();
