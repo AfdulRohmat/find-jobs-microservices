@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -34,6 +35,8 @@ public class CompanyProfile {
     private String industry;
     private String size;
     private String profileImageUrl;
+
+    private Long createdByUserId;
 
     @Column(nullable = false, updatable = false)
     @CreationTimestamp

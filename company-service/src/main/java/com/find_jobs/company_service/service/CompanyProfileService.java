@@ -1,8 +1,10 @@
 package com.find_jobs.company_service.service;
 
+import com.find_jobs.company_service.client.AuthServiceClient;
 import com.find_jobs.company_service.constant.Constant;
 import com.find_jobs.company_service.dto.request.CompanyProfileRequestDTO;
 import com.find_jobs.company_service.entity.CompanyProfile;
+import com.find_jobs.company_service.entity.User;
 import com.find_jobs.company_service.exception.NotFoundException;
 import com.find_jobs.company_service.repository.CompanyProfileRepository;
 import com.find_jobs.company_service.service.mapper.CompanyProfileMapper;
@@ -20,8 +22,13 @@ public class CompanyProfileService {
     @Autowired
     private CompanyProfileMapper companyProfileMapper;
 
+    @Autowired
+    private AuthServiceClient authServiceClient;
+
     @Transactional
     public Response<Object> createCompanyProfile(CompanyProfileRequestDTO companyProfileRequestDTO) {
+        Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
+
         CompanyProfile companyProfile = new CompanyProfile();
 
         companyProfile.setName(companyProfileRequestDTO.getName());
@@ -35,6 +42,7 @@ public class CompanyProfileService {
         companyProfile.setIndustry(companyProfileRequestDTO.getIndustry());
         companyProfile.setSize(companyProfileRequestDTO.getSize());
         companyProfile.setProfileImageUrl(companyProfileRequestDTO.getProfileImageUrl());
+        companyProfile.setCreatedByUserId(userCurrentlyLogin.getData().getId());
 
         CompanyProfile savedCompanyProfile = companyProfileRepository.save(companyProfile);
 
@@ -47,11 +55,25 @@ public class CompanyProfileService {
 
 
     @Transactional
-    public Response<Object> getCompanyProfile(Long companyId) {
-        CompanyProfile companyProfile = companyProfileRepository.findById(companyId)
+    public Response<Object> getCompanyProfile() {
+
+        Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
+
+        CompanyProfile companyProfile = companyProfileRepository.findByCreatedByUserId(userCurrentlyLogin.getData().getId())
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
-//        mapToCompanyProfileResponseDTO(companyProfile);
+        return Response.builder()
+                .responseCode(Constant.Response.SUCCESS_CODE)
+                .responseMessage(Constant.Response.SUCCESS_MESSAGE)
+                .data(companyProfile)
+                .build();
+    }
+
+    @Transactional
+    public Response<Object> getCompanyProfileById(Long companyId) {
+
+        CompanyProfile companyProfile = companyProfileRepository.findById(companyId)
+                .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)

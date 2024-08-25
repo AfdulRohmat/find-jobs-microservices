@@ -22,7 +22,7 @@ public class GatewayConfig {
                         .uri("lb://APPLICANT-PROFILE-SERVICE"))
                 .route("company-service", r -> r.path("/api/v1/company-profiles/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
-                        .uri("lb://COMPANY-PROFILE-SERVICE"))
+                        .uri("lb://COMPANY-SERVICE"))
                 .build();
     }
 }
