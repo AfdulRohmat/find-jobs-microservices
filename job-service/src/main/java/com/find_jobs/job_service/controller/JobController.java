@@ -2,12 +2,11 @@ package com.find_jobs.job_service.controller;
 
 import com.find_jobs.job_service.dto.request.JobRequestDTO;
 import com.find_jobs.job_service.service.JobService;
-import com.find_jobs.job_service.utils.ResponseHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,17 +15,20 @@ public class JobController {
     @Autowired
     private JobService jobService;
 
+    @PreAuthorize("hasRole('EMPLOYER')")
     @PostMapping(value = "/",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Object> createCourse(@Valid @RequestBody JobRequestDTO jobRequestDTO) {
+    public ResponseEntity<Object> createJob(@Valid @RequestBody JobRequestDTO jobRequestDTO) {
         return ResponseEntity.ok(jobService.createJob(jobRequestDTO));
     }
 
-    @GetMapping
-    public ResponseEntity<Object> getAllJobs() {
-        return ResponseEntity.ok(jobService.getAllJobs());
-
+    @GetMapping(value = "/")
+    public ResponseEntity<Object> getAllJobs(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(jobService.getAllJobs(page, size));
     }
 
     @GetMapping("/{id}")
@@ -44,9 +46,12 @@ public class JobController {
         return ResponseEntity.ok(jobService.deleteJob(id));
     }
 
-    @GetMapping("/test")
+    @GetMapping(value = "/test",
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+    @PreAuthorize("hasRole('APPLICANT') or hasRole('EMPLOYER')")
     public ResponseEntity<Object> getTest() {
-        return ResponseEntity.ok("Hello World");
+        return ResponseEntity.ok("Success Test");
     }
 
 }

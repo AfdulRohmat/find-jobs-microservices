@@ -1,5 +1,6 @@
 package com.find_jobs.job_service.dto.response;
 
+import com.find_jobs.job_service.entity.CompanyProfile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,20 +14,21 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class JobResponseDTO {
+    private Long id;
     private String title;
     private String description;
     private String location;
-    private String company;
-    private String employmentType;
     private String salary;
+    private String employmentType;
     private String experienceLevel;
     private String yearsOfExperience;
-    private String qualifications;
-    private String benefits;
     private LocalDate postedDate;
-    private LocalDate applicationDeadline;
+    private LocalDate expiryDate;
     private List<String> skills;
     private String industry;
     private String jobFunction;
     private String educationLevel;
+
+    private Long companyId;
+    private CompanyProfile company;
 }

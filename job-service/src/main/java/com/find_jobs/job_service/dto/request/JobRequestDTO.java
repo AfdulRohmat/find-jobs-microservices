@@ -1,6 +1,5 @@
 package com.find_jobs.job_service.dto.request;
 
-import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -9,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -29,9 +27,8 @@ public class JobRequestDTO {
     @NotNull(message = "Field cannot be empty!")
     private String location;
 
-    @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String company;
+    private Long companyId;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")

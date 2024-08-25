@@ -23,6 +23,9 @@ public class GatewayConfig {
                 .route("company-service", r -> r.path("/api/v1/company-profiles/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("lb://COMPANY-SERVICE"))
+                .route("job-service", r -> r.path("/api/v1/jobs/**")
+                        .filters(f -> f.filter(jwtAuthenticationFilter))
+                        .uri("lb://JOB-SERVICE"))
                 .build();
     }
 }

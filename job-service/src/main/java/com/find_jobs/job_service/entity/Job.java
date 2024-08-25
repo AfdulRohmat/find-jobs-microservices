@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,7 +26,7 @@ public class Job {
     private String title;
     private String description;
     private String location;
-    private String companyName;
+    private Long companyId;
     private String salary;
     private String employmentType;
     private String experienceLevel;
@@ -37,5 +40,14 @@ public class Job {
     private String industry;
     private String jobFunction;
     private String educationLevel;
+
+    private Long createdByUserId;
+
+    @Column(nullable = false, updatable = false)
+    @CreationTimestamp
+    private Timestamp createdAt;
+
+    @UpdateTimestamp
+    private Timestamp updatedAt;
 
 }
