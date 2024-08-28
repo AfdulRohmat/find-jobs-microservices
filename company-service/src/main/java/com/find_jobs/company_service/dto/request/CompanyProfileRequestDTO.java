@@ -2,6 +2,7 @@ package com.find_jobs.company_service.dto.request;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @Builder
@@ -16,5 +17,5 @@ public class CompanyProfileRequestDTO {
     private String description;
     private String industry;
     private String size;
-    private String profileImageUrl;
+    private MultipartFile companyPhotoProfileFile;
 }

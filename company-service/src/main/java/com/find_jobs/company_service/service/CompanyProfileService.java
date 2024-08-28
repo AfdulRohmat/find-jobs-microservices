@@ -1,8 +1,10 @@
 package com.find_jobs.company_service.service;
 
 import com.find_jobs.company_service.client.AuthServiceClient;
+import com.find_jobs.company_service.client.StorageServiceClient;
 import com.find_jobs.company_service.constant.Constant;
 import com.find_jobs.company_service.dto.request.CompanyProfileRequestDTO;
+import com.find_jobs.company_service.dto.response.CloudinaryUploadResponseDTO;
 import com.find_jobs.company_service.entity.CompanyProfile;
 import com.find_jobs.company_service.entity.User;
 import com.find_jobs.company_service.exception.NotFoundException;
@@ -25,6 +27,9 @@ public class CompanyProfileService {
     @Autowired
     private AuthServiceClient authServiceClient;
 
+    @Autowired
+    private StorageServiceClient storageServiceClient;
+
     @Transactional
     public Response<Object> createCompanyProfile(CompanyProfileRequestDTO companyProfileRequestDTO) {
         Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
@@ -41,8 +46,11 @@ public class CompanyProfileService {
         companyProfile.setDescription(companyProfileRequestDTO.getDescription());
         companyProfile.setIndustry(companyProfileRequestDTO.getIndustry());
         companyProfile.setSize(companyProfileRequestDTO.getSize());
-        companyProfile.setProfileImageUrl(companyProfileRequestDTO.getProfileImageUrl());
         companyProfile.setCreatedByUserId(userCurrentlyLogin.getData().getId());
+
+        Response<CloudinaryUploadResponseDTO> uploadPhotoProfileToStorage = storageServiceClient.uploadFile(companyProfileRequestDTO.getCompanyPhotoProfileFile(), "company-profile");
+
+        companyProfile.setProfileImageUrl(uploadPhotoProfileToStorage.getData().getSecure_url());
 
         CompanyProfile savedCompanyProfile = companyProfileRepository.save(companyProfile);
 
