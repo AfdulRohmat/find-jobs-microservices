@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: storage-service
+  config:
+    import: optional:configserver:http://localhost:8888
+
+cloudinary:
+  cloud_name: dmyo8iuwy
+  api_key: 345322644637628
+  api_secret: yrsWAGDK5cfXyoLxwG6ttTzr0g8

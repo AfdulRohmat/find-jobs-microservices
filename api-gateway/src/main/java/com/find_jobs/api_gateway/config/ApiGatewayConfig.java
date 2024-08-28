@@ -8,8 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class GatewayConfig {
-
+public class ApiGatewayConfig {
 
     @Bean
     public RouteLocator gatewayRoutes(RouteLocatorBuilder builder, JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -26,6 +25,8 @@ public class GatewayConfig {
                 .route("job-service", r -> r.path("/api/v1/jobs/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("lb://JOB-SERVICE"))
+                .route("storage-service", r -> r.path("/api/v1/storage/**")
+                        .uri("lb://STORAGE-SERVICE"))
                 .build();
     }
 }

@@ -22,6 +22,7 @@
         <option value="$PROJECT_DIR$/company-service/pom.xml" />
         <option value="$PROJECT_DIR$/user-service/pom.xml" />
         <option value="$PROJECT_DIR$/applicant-profile-service/pom.xml" />
+        <option value="$PROJECT_DIR$/storage-service/pom.xml" />
       </list>
     </option>
     <option name="ignoredFiles">

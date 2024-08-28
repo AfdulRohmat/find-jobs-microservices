@@ -1,9 +1,11 @@
 package com.find_jobs.applicant_profile_service.service;
 
 import com.find_jobs.applicant_profile_service.client.AuthServiceClient;
+import com.find_jobs.applicant_profile_service.client.StorageServiceClient;
 import com.find_jobs.applicant_profile_service.constant.Constant;
 import com.find_jobs.applicant_profile_service.dto.request.*;
 import com.find_jobs.applicant_profile_service.dto.response.ApplicantProfileResponseDTO;
+import com.find_jobs.applicant_profile_service.dto.response.CloudinaryUploadResponseDTO;
 import com.find_jobs.applicant_profile_service.entity.*;
 import com.find_jobs.applicant_profile_service.exception.NotFoundException;
 import com.find_jobs.applicant_profile_service.repository.*;
@@ -36,6 +38,9 @@ public class ApplicantProfileService {
     @Autowired
     private AuthServiceClient authServiceClient;
 
+    @Autowired
+    private StorageServiceClient storageServiceClient;
+
     @Transactional
     public Response<Object> getApplicantProfile() {
         Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
@@ -54,7 +59,6 @@ public class ApplicantProfileService {
                 .skills(mapToSkill(applicantProfile))
                 .build();
 
-
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
                 .responseMessage(Constant.Response.CREATE_SUCCESS_MESSAGE)
@@ -71,7 +75,17 @@ public class ApplicantProfileService {
         applicantProfile.setUserId(userCurrentlyLogin.getData().getId());
         applicantProfile.setFullName(userCurrentlyLogin.getData().getUsername());
         applicantProfile.setPersonalSummary(request.getPersonalSummary());
-        applicantProfile.setCvUrl(request.getCvUrl());  // temporary, later will fill by actual url
+
+        // upload File to Cloudinary
+        Response<CloudinaryUploadResponseDTO> uploadCvToStorage = storageServiceClient.uploadFile(request.getCvFile(), "applicant-profile");
+        Response<CloudinaryUploadResponseDTO> uploadPhotoProfileToStorage = storageServiceClient.uploadFile(request.getPhotoProfileFile(), "applicant-profile");
+
+
+        applicantProfile.setCvUrl(uploadCvToStorage.getData().getSecure_url());
+        applicantProfile.setCvPublicId(uploadCvToStorage.getData().getPublic_id());
+
+        applicantProfile.setPhotoProfileUrl(uploadPhotoProfileToStorage.getData().getSecure_url());
+        applicantProfile.setPhotoProfilePublicId(uploadPhotoProfileToStorage.getData().getPublic_id());
 
         applicantProfileRepository.save(applicantProfile);
 

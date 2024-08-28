@@ -25,7 +25,12 @@ public class ApplicantProfile {
 
     private String fullName;
     private String personalSummary;
+
+    private String photoProfileUrl;
+    private String photoProfilePublicId;
+
     private String cvUrl;
+    private String cvPublicId;
 
     @OneToOne(mappedBy = "applicantProfileId", cascade = CascadeType.ALL)
     private ApplicantAddress address;

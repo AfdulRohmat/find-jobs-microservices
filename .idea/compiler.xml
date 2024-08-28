@@ -13,6 +13,7 @@
         <module name="applicant-profile-service" />
         <module name="api-gateway" />
         <module name="company-service" />
+        <module name="storage-service" />
         <module name="eureka-server" />
       </profile>
     </annotationProcessing>
@@ -33,6 +34,7 @@
       <module name="eureka-discovery-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="job-service" options="-parameters" />
+      <module name="storage-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>
   </component>

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -11,5 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApplicantProfileRequestDTO {
     private String personalSummary;
-    private String cvUrl;
+    private MultipartFile cvFile;
+    private MultipartFile photoProfileFile;
 }
