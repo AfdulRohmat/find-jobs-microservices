@@ -16,6 +16,7 @@ public class ApplicantProfileResponseDTO {
     private Long userId;
     private String personalSummary;
     private String cvUrl;
+    private String photoProfileUrl;
     private ApplicantAddress address;
     private List<CareerHistory> careerHistories;
     private List<EducationHistory> educationHistories;

@@ -53,6 +53,7 @@ public class ApplicantProfileService {
                 .userId(userCurrentlyLogin.getData().getId())
                 .personalSummary(applicantProfile.getPersonalSummary())
                 .cvUrl(applicantProfile.getCvUrl())
+                .photoProfileUrl(applicantProfile.getPhotoProfileUrl())
                 .address(mapToAddress(applicantProfile))
                 .careerHistories(mapToCareerHistory(applicantProfile))
                 .educationHistories(mapToEducationHistory(applicantProfile))
@@ -79,7 +80,6 @@ public class ApplicantProfileService {
         // upload File to Cloudinary
         Response<CloudinaryUploadResponseDTO> uploadCvToStorage = storageServiceClient.uploadFile(request.getCvFile(), "applicant-profile");
         Response<CloudinaryUploadResponseDTO> uploadPhotoProfileToStorage = storageServiceClient.uploadFile(request.getPhotoProfileFile(), "applicant-profile");
-
 
         applicantProfile.setCvUrl(uploadCvToStorage.getData().getSecure_url());
         applicantProfile.setCvPublicId(uploadCvToStorage.getData().getPublic_id());

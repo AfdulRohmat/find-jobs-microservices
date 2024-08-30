@@ -2,6 +2,7 @@ package com.find_jobs.applicant_profile_service.controller;
 
 import com.find_jobs.applicant_profile_service.dto.request.*;
 import com.find_jobs.applicant_profile_service.service.ApplicantProfileService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +24,11 @@ public class ApplicantProfileController {
     }
 
     @PostMapping(value = "/profile",
-            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     @PreAuthorize("hasRole('APPLICANT')")
-    public ResponseEntity<Object> addUserProfile(@RequestBody ApplicantProfileRequestDTO applicantProfileRequestDTO) {
+    public ResponseEntity<Object> addUserProfile(@ModelAttribute @Valid ApplicantProfileRequestDTO applicantProfileRequestDTO) {
         return ResponseEntity.ok(applicantProfileService.addApplicantProfile(applicantProfileRequestDTO));
     }
 

@@ -1,8 +1,10 @@
 package com.find_jobs.applicant_profile_service.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CloudinaryUploadResponseDTO {
     private String signature;
     private String format;
@@ -12,7 +14,7 @@ public class CloudinaryUploadResponseDTO {
     private String asset_id;
     private String version_id;
     private String type;
-    private long version;
+    private String version;
     private String url;
     private String public_id;
     private String[] tags;
@@ -21,7 +23,7 @@ public class CloudinaryUploadResponseDTO {
     private String api_key;
     private long bytes;
     private int width;
-    private int height;
     private String etag;
     private boolean placeholder;
+    private int height;
 }

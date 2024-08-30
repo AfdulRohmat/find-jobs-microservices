@@ -72,10 +72,10 @@ public class JobService {
     }
 
     @Transactional
-    public Response<Object> getAllJobs(int page, int size) {
+    public Response<Object> getAllJobs(int page, int size,  String search, String location, Long companyId, String employmentType) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Job> getAllJobs = jobRepository.findAll(pageable);
+        Page<Job> getAllJobs = jobRepository.searchJobs(search, location, companyId, employmentType, pageable);
 
         List<JobResponseDTO> jobResponseDTOs = getAllJobs.stream()
                 .map(this::mapToJobResponseDTO)

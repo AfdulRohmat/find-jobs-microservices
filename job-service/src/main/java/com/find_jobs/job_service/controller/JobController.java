@@ -26,9 +26,13 @@ public class JobController {
     @GetMapping(value = "/")
     public ResponseEntity<Object> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String location,
+            @RequestParam(required = false) Long companyId,
+            @RequestParam(required = false) String employmentType
     ) {
-        return ResponseEntity.ok(jobService.getAllJobs(page, size));
+        return ResponseEntity.ok(jobService.getAllJobs(page, size, search, location, companyId, employmentType));
     }
 
     @GetMapping("/{id}")

@@ -36,7 +36,7 @@ public class StorageService {
             return Response.builder()
                     .responseCode(200)
                     .responseMessage("File uploaded successfully")
-                    .data(cloudinaryUploadResponseDTO)
+                    .data(uploadResult)
                     .build();
 
         } catch (IOException e) {
