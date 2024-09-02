@@ -1,4 +1,4 @@
-package com.find_jobs.company_service.entity;
+package com.find_jobs.application_service.entity;
 
 
 import lombok.Data;

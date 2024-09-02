@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: application-process-service
+  config:
+    import: optional:configserver:http://localhost:8888
+
+jwt:
+  secret: mnTxowKDJQhC7FsH7gTqLz7Rpi2YHfXO7nFJc8P8tQRGdeVd9rXvUgEGeZDUmbHokXmLcty+guTv1M5ZOE3RUw==
+
