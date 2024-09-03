@@ -10,12 +10,12 @@
         <module name="job-service" />
         <module name="config-server" />
         <module name="auth-service" />
-        <module name="application-service" />
         <module name="applicant-profile-service" />
         <module name="api-gateway" />
         <module name="company-service" />
         <module name="storage-service" />
         <module name="eureka-server" />
+        <module name="application-process-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -28,7 +28,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="applicant-profile-service" options="-parameters" />
-      <module name="application-service" options="-parameters" />
+      <module name="application-process-service" options="-parameters" />
       <module name="auth-service" options="-parameters" />
       <module name="company-profile" options="-parameters" />
       <module name="company-service" options="-parameters" />

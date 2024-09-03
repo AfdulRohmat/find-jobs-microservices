@@ -25,6 +25,9 @@ public class ApiGatewayConfig {
                 .route("job-service", r -> r.path("/api/v1/jobs/**")
                         .filters(f -> f.filter(jwtAuthenticationFilter))
                         .uri("lb://JOB-SERVICE"))
+                .route("application-process-service", r -> r.path("/api/v1/application/**")
+                        .filters(f -> f.filter(jwtAuthenticationFilter))
+                        .uri("lb://APPLICATION-PROCESS-SERVICE"))
                 .route("storage-service", r -> r.path("/api/v1/storage/**")
                         .uri("lb://STORAGE-SERVICE"))
                 .build();

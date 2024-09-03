@@ -72,7 +72,7 @@ public class JobService {
     }
 
     @Transactional
-    public Response<Object> getAllJobs(int page, int size,  String search, String location, Long companyId, String employmentType) {
+    public Response<Object> getAllJobs(int page, int size, String search, String location, Long companyId, String employmentType) {
         Pageable pageable = PageRequest.of(page, size);
 
         Page<Job> getAllJobs = jobRepository.searchJobs(search, location, companyId, employmentType, pageable);
@@ -101,6 +101,7 @@ public class JobService {
         Response<CompanyProfile> companyProfile = companyServiceClient.getCompanyById(job.getCompanyId());
 
         JobResponseDTO data = JobResponseDTO.builder()
+                .id(job.getId())
                 .title(job.getTitle())
                 .description(job.getDescription())
                 .location(job.getLocation())
