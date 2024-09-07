@@ -10,6 +10,7 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
+    restart: unless-stopped
     networks:
       - microservices-network
 
@@ -17,11 +18,12 @@ services:
     image: postgres:latest
     container_name: auth-service-db
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
       POSTGRES_DB: auth-service-db
     ports:
       - "54310:5432"
+    restart: unless-stopped
     networks:
       - microservices-network
 
@@ -34,6 +36,7 @@ services:
       POSTGRES_DB: applicant-profile-service-db
     ports:
       - "54320:5432"
+    restart: unless-stopped
     networks:
       - microservices-network
 

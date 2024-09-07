@@ -11,9 +11,12 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/job-portal-db-springboot
-    username: postgres
-    password: postgreSQLPassword2023@
+#    url: jdbc:postgresql://localhost:5432/job-portal-db-springboot
+#    username: postgres
+#    password: postgreSQLPassword2023@
+    url: jdbc:postgresql://localhost:54310/auth-service-db
+    username: root
+    password: root
   jpa:
     hibernate:
       ddl-auto: update
