@@ -1,5 +1,6 @@
 package com.find_jobs.application_process_service.service;
 
+import com.find_jobs.application_process_service.client.AuthServiceClient;
 import com.find_jobs.application_process_service.client.CompanyServiceClient;
 import com.find_jobs.application_process_service.client.JobServiceClient;
 import com.find_jobs.application_process_service.constant.Constant;
@@ -7,9 +8,12 @@ import com.find_jobs.application_process_service.dto.request.ApplicationRequestD
 import com.find_jobs.application_process_service.dto.response.ApplicationResponseDTO;
 import com.find_jobs.application_process_service.dto.response.CompanyResponseDTO;
 import com.find_jobs.application_process_service.dto.response.JobResponseDTO;
+import com.find_jobs.application_process_service.dto.response.UserResponseDTO;
 import com.find_jobs.application_process_service.entity.Application;
 import com.find_jobs.application_process_service.entity.ApplicationStatusHistory;
+import com.find_jobs.application_process_service.entity.User;
 import com.find_jobs.application_process_service.entity.enums.ApplicationStatus;
+import com.find_jobs.application_process_service.exception.DataExistException;
 import com.find_jobs.application_process_service.exception.NotFoundException;
 import com.find_jobs.application_process_service.repository.ApplicationProcessRepository;
 import com.find_jobs.application_process_service.util.Response;
@@ -37,12 +41,23 @@ public class ApplicationProcessService {
     @Autowired
     JobServiceClient jobServiceClient;
 
+    @Autowired
+    AuthServiceClient authServiceClient;
+
     @Transactional
     public Response<Object> applyJob(ApplicationRequestDTO applicationRequestDTO) {
 
+        Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLoginData();
+
+        // Check if the specific job id is already applied, then throw an error
+        boolean alreadyApplied = applicationProcessRepository.existsByJobIdAndApplicantId(applicationRequestDTO.getJobId(), userCurrentlyLogin.getData().getId());
+        if (alreadyApplied) {
+            throw new DataExistException(Constant.Message.EXIST_DATA_MESSAGE);
+        }
+
         Application application = Application.builder()
                 .jobId(applicationRequestDTO.getJobId())
-                .applicantId(applicationRequestDTO.getApplicantId())
+                .applicantId(userCurrentlyLogin.getData().getId())
                 .companyId(applicationRequestDTO.getCompanyId())
                 .status(ApplicationStatus.APPLIED)
                 .resumeUrl(applicationRequestDTO.getResumeUrl())
@@ -53,7 +68,7 @@ public class ApplicationProcessService {
 
         // add data application to log
         applicationStatusHistoryService.logApplicationStatusChange(savedApplication.getId(),
-                savedApplication.getStatus(), applicationRequestDTO.getApplicantId());
+                savedApplication.getStatus(), savedApplication.getApplicantId());
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
@@ -70,7 +85,7 @@ public class ApplicationProcessService {
         Application application = applicationProcessRepository.findById(applicationId)
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
-
+        Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLoginData();
         Response<CompanyResponseDTO> company = companyServiceClient.getCompanyProfile(application.getCompanyId());
         Response<JobResponseDTO> job = jobServiceClient.getJobById(application.getJobId());
         List<ApplicationStatusHistory> applicationStatusHistoryList = applicationStatusHistoryService.getHistoryByApplicationId(application.getId());
@@ -78,22 +93,24 @@ public class ApplicationProcessService {
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
                 .responseMessage(Constant.Response.CREATE_SUCCESS_MESSAGE)
-                .data(mapToApplicationResponseDTO(application, job.getData(), company.getData(), applicationStatusHistoryList))
+                .data(mapToApplicationResponseDTO(application, job.getData(), company.getData(), applicationStatusHistoryList, userCurrentlyLogin.getData()))
                 .build();
     }
 
     // Update status of application (only user with role employer can access this api)
     @Transactional
-    public Response<Object> updateApplicationStatus(Long applicationId, ApplicationStatus status, Long changedBy) {
+    public Response<Object> updateApplicationStatus(Long applicationId, ApplicationStatus status) {
 
         Application application = applicationProcessRepository.findById(applicationId)
                 .orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
 
         application.setStatus(status);
 
+        Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLoginData();
+
         Application updatedApplication = applicationProcessRepository.save(application);
 
-        applicationStatusHistoryService.logApplicationStatusChange(applicationId, status, changedBy);
+        applicationStatusHistoryService.logApplicationStatusChange(applicationId, status, userCurrentlyLogin.getData().getId());
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
@@ -104,13 +121,15 @@ public class ApplicationProcessService {
 
     // get application data base on applicantId
     @Transactional
-    public Response<Object> getAllApplicationsForApplicant(int page, int size, Long applicantId, ApplicationStatus status) {
+    public Response<Object> getAllApplicationsForApplicant(int page, int size, ApplicationStatus status) {
+
+        Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLoginData();
 
         Pageable pageable = PageRequest.of(page, size);
 
         String statusString = status != null ? status.toString() : null;
 
-        Page<Application> applications = applicationProcessRepository.getApplicationsByApplicantId(applicantId, statusString, pageable);
+        Page<Application> applications = applicationProcessRepository.getApplicationsByApplicantId(userCurrentlyLogin.getData().getId(), statusString, pageable);
 
         List<ApplicationResponseDTO> applicationResponseDTOList = applications.stream()
                 .map(application -> {
@@ -120,7 +139,7 @@ public class ApplicationProcessService {
                     return ApplicationResponseDTO.builder()
                             .id(application.getId())
                             .job(job.getData())
-                            .applicantId(application.getApplicantId())
+                            .applicant(userCurrentlyLogin.getData())
                             .company(company.getData())
                             .status(application.getStatus())
                             .appliedAt(application.getAppliedAt())
@@ -149,6 +168,8 @@ public class ApplicationProcessService {
 
         Page<Application> applications = applicationProcessRepository.getApplicationsByCompanyId(companyId, statusString, pageable);
 
+        Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLoginData();
+
         List<ApplicationResponseDTO> applicationResponseDTOList = applications.stream()
                 .map(application -> {
                     Response<CompanyResponseDTO> company = companyServiceClient.getCompanyProfile(application.getCompanyId());
@@ -157,7 +178,7 @@ public class ApplicationProcessService {
                     return ApplicationResponseDTO.builder()
                             .id(application.getId())
                             .job(job.getData())
-                            .applicantId(application.getApplicantId())
+                            .applicant(userCurrentlyLogin.getData())
                             .company(company.getData())
                             .status(application.getStatus())
                             .appliedAt(application.getAppliedAt())
@@ -176,11 +197,14 @@ public class ApplicationProcessService {
     }
 
 
-    private ApplicationResponseDTO mapToApplicationResponseDTO(Application application, JobResponseDTO jobResponseDTO, CompanyResponseDTO companyResponseDTO, List<ApplicationStatusHistory> applicationStatusHistoryList) {
+    private ApplicationResponseDTO mapToApplicationResponseDTO(Application application, JobResponseDTO jobResponseDTO,
+                                                               CompanyResponseDTO companyResponseDTO,
+                                                               List<ApplicationStatusHistory> applicationStatusHistoryList,
+                                                               UserResponseDTO applicant) {
         return ApplicationResponseDTO.builder()
                 .id(application.getId())
                 .job(jobResponseDTO)
-                .applicantId(application.getApplicantId())
+                .applicant(applicant)
                 .company(companyResponseDTO)
                 .status(application.getStatus())
                 .tracking(applicationStatusHistoryList)

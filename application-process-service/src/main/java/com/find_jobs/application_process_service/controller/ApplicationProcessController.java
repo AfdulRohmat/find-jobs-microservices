@@ -42,10 +42,9 @@ public class ApplicationProcessController {
     @PutMapping("/status")
     @PreAuthorize("hasRole('EMPLOYER')")
     public ResponseEntity<Object> updateApplicationStatus(@RequestParam(name = "application_id") Long id,
-                                                          @RequestParam(name = "status") ApplicationStatus status,
-                                                          @RequestParam(name = "change_by_user_id") Long changedByUserId) {
+                                                          @RequestParam(name = "status") ApplicationStatus status) {
 
-        return ResponseEntity.ok(applicationProcessService.updateApplicationStatus(id, status, changedByUserId));
+        return ResponseEntity.ok(applicationProcessService.updateApplicationStatus(id, status));
     }
 
     @PreAuthorize("hasRole('APPLICANT')")
@@ -53,10 +52,9 @@ public class ApplicationProcessController {
     public ResponseEntity<Object> getAllApplicationsForApplicant(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(name = "applicant_id") Long applicantId,
             @RequestParam(required = false) ApplicationStatus status
     ) {
-        return ResponseEntity.ok(applicationProcessService.getAllApplicationsForApplicant(page, size, applicantId, status));
+        return ResponseEntity.ok(applicationProcessService.getAllApplicationsForApplicant(page, size, status));
     }
 
     @PreAuthorize("hasRole('EMPLOYER')")
@@ -64,7 +62,7 @@ public class ApplicationProcessController {
     public ResponseEntity<Object> getAllApplicationsForCompany(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(name = "company_id", required = false) Long companyId,
+            @RequestParam(name = "company_id") Long companyId,
             @RequestParam(required = false) ApplicationStatus status
     ) {
         return ResponseEntity.ok(applicationProcessService.getAllApplicationsForCompany(page, size, companyId, status));

@@ -26,4 +26,6 @@ public interface ApplicationProcessRepository extends JpaRepository<Application,
     Page<Application> getApplicationsByCompanyId(@Param("companyId") Long companyId,
                                                  @Param("status") String status,
                                                  Pageable pageable);
+
+    boolean existsByJobIdAndApplicantId(Long jobId, Long applicantId);
 }

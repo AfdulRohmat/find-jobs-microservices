@@ -1,0 +1,10 @@
+api-gateway = 8080
+eureka-server = 8761
+
+auth-service = 8091
+applicant-profile-service = 8093
+company-service = 8094
+job-service = 8095
+application-process-service = 8096
+kafka-producer-service = 8097
+storage-service = 8098

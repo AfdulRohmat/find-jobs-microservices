@@ -1,6 +1,7 @@
 package com.find_jobs.application_process_service.dto.response;
 
 import com.find_jobs.application_process_service.entity.ApplicationStatusHistory;
+import com.find_jobs.application_process_service.entity.User;
 import com.find_jobs.application_process_service.entity.enums.ApplicationStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import java.util.List;
 @Builder
 public class ApplicationResponseDTO {
     private Long id;
-    private Long applicantId;
+    private UserResponseDTO applicant;
     private JobResponseDTO job;
     private CompanyResponseDTO company;
     private ApplicationStatus status;

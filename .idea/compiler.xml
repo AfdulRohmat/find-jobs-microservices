@@ -12,6 +12,7 @@
         <module name="auth-service" />
         <module name="applicant-profile-service" />
         <module name="api-gateway" />
+        <module name="kafka-producer-service" />
         <module name="company-service" />
         <module name="storage-service" />
         <module name="eureka-server" />
@@ -36,6 +37,7 @@
       <module name="eureka-discovery-server" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
       <module name="job-service" options="-parameters" />
+      <module name="kafka-producer-service" options="-parameters" />
       <module name="storage-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

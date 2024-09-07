@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ApplicationRequestDTO {
     private Long jobId;
-    private Long applicantId;
     private Long companyId;
     private String resumeUrl;
     private String coverLetter;

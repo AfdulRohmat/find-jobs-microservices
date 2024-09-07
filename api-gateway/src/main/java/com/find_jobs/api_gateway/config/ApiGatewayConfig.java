@@ -30,6 +30,8 @@ public class ApiGatewayConfig {
                         .uri("lb://APPLICATION-PROCESS-SERVICE"))
                 .route("storage-service", r -> r.path("/api/v1/storage/**")
                         .uri("lb://STORAGE-SERVICE"))
+                .route("kafka-producer-service", r -> r.path("/api/v1/kafka/**")
+                        .uri("lb://KAFKA-PRODUCER-SERVICE"))
                 .build();
     }
 }
