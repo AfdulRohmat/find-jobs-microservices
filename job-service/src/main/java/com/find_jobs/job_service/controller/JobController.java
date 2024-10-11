@@ -27,17 +27,23 @@ public class JobController {
     public ResponseEntity<Object> getAllJobs(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String location,
+            @RequestParam(required = false) String jobTitle,
+            @RequestParam(required = false) String locationCountry,
+            @RequestParam(required = false) String locationCity,
             @RequestParam(required = false) Long companyId,
-            @RequestParam(required = false) String employmentType
+            @RequestParam(required = false) String jobType
     ) {
-        return ResponseEntity.ok(jobService.getAllJobs(page, size, search, location, companyId, employmentType));
+        return ResponseEntity.ok(jobService.getAllJobs(page, size, jobTitle, locationCountry, locationCity, companyId, jobType));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getJobById(@PathVariable Long id) {
         return ResponseEntity.ok(jobService.getJobById(id));
+    }
+
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<Object> getJobByCompanyId(@PathVariable Long companyId) {
+        return ResponseEntity.ok(jobService.getJobPostedByCompany(companyId));
     }
 
     @PutMapping("/{id}")

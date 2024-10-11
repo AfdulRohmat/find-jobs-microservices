@@ -1,5 +1,6 @@
 package com.find_jobs.job_service.dto.request;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,62 +16,80 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class JobRequestDTO {
-    @NotBlank(message = "Field cannot be empty!")
-    @NotNull(message = "Field cannot be empty!")
-    private String title;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String description;
+    private String jobTitle;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String location;
-
-    @NotNull(message = "Field cannot be empty!")
-    private Long companyId;
+    private String tags;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String employmentType;
+    private String jobRole;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String salary;
+    private Double minSalary;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String experienceLevel;
+    private Double maxSalary;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String yearsOfExperience;
+    private String salaryType;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String qualifications;
+    private String education;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String benefits;
+    private String experience;
 
+    @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private LocalDate postedDate;
+    private String jobType;
 
+    @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private LocalDate applicationDeadline;
+    private Integer vacancies;
 
+    @NotBlank(message = "Field cannot be empty!")
+    @NotNull(message = "Field cannot be empty!")
     private List<String> skills;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String industry;
+    private LocalDate expirationDate;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String jobFunction;
+    private String jobLevel;
 
     @NotBlank(message = "Field cannot be empty!")
     @NotNull(message = "Field cannot be empty!")
-    private String educationLevel;
+    private String locationCountry;
+
+    @NotBlank(message = "Field cannot be empty!")
+    @NotNull(message = "Field cannot be empty!")
+    private String locationCity;
+
+    @NotBlank(message = "Field cannot be empty!")
+    @NotNull(message = "Field cannot be empty!")
+    private Boolean enableRemote;
+
+    @NotBlank(message = "Field cannot be empty!")
+    @NotNull(message = "Field cannot be empty!")
+    private List<String> jobBenefits;
+
+    @NotBlank(message = "Field cannot be empty!")
+    @NotNull(message = "Field cannot be empty!")
+    private String jobDescription;
+
+    @NotBlank(message = "Field cannot be empty!")
+    @NotNull(message = "Field cannot be empty!")
+    private Long companyId;
 }

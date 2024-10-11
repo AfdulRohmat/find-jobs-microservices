@@ -1,47 +1,53 @@
 package com.find_jobs.company_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Builder
 @Table(name = "company_profiles")
 public class CompanyProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    private String street;
-    private String city;
-    private String state;
-    private String postalCode;
-    private String country;
-
-    private String website;
+    private String companyLogo;
+    private String banner;
+    private String companyName;
     private String description;
-    private String industry;
-    private String size;
-    private String profileImageUrl;
+    private String organizationType;
+    private String industryType;
+    private String teamSize;
+    private Integer yearsOfEstablishment;
+    private String companyWebsite;
+    private String companyVision;
+
+    @ElementCollection
+    private List<String> socialMediaLinks;
+
+    private String address;
+    private String phoneContact;
+    private String companyEmail;
 
     private Long createdByUserId;
 
-    @Column(nullable = false, updatable = false)
     @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @Column(name = "deleted_at")
+    private Timestamp deletedAt;
 }

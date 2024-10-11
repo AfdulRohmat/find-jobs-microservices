@@ -17,11 +17,14 @@
         <module name="storage-service" />
         <module name="eureka-server" />
         <module name="application-process-service" />
+        <module name="notification-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="company-profile" target="21" />
       <module name="eureka-discovery-server" target="21" />
+      <module name="notification-service.main" target="21" />
+      <module name="notification-service.test" target="21" />
       <module name="user-service" target="21" />
     </bytecodeTargetLevel>
   </component>
@@ -38,6 +41,7 @@
       <module name="eureka-server" options="-parameters" />
       <module name="job-service" options="-parameters" />
       <module name="kafka-producer-service" options="-parameters" />
+      <module name="notification-service" options="-parameters" />
       <module name="storage-service" options="-parameters" />
       <module name="user-service" options="-parameters" />
     </option>

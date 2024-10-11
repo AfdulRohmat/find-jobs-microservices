@@ -32,6 +32,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.getUserLogin());
     }
 
+    @GetMapping(value = "/user/{userId}")
+    public ResponseEntity<Object> getUserById(@PathVariable Long userId) {
+        return ResponseEntity.ok(authService.getUserById(userId));
+    }
+
     @GetMapping(value = "/test")
     @PreAuthorize("hasRole('APPLICANT')")
     public ResponseEntity<Object> doTest() {

@@ -7,16 +7,31 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface JobRepository extends JpaRepository<Job, Long> {
     @Query(value = "SELECT * FROM job WHERE " +
-            "(:search IS NULL OR title ILIKE %:search%) AND " +
-            "(:location IS NULL OR location ILIKE %:location%) AND " +
+            "(:jobTitle IS NULL OR job_title ILIKE %:jobTitle%) AND " +
+            "(:locationCountry IS NULL OR location_country ILIKE %:locationCountry%) AND " +
+            "(:locationCity IS NULL OR location_city ILIKE %:locationCity%) AND " +
             "(:companyId IS NULL OR company_id = :companyId) AND " +
-            "(:employmentType IS NULL OR employment_type ILIKE %:employmentType%)",
+            "(:jobType IS NULL OR job_type ILIKE %:jobType%) AND " +
+            "deleted_at IS NULL ",
             nativeQuery = true)
-    Page<Job> searchJobs(@Param("search") String search,
-                         @Param("location") String location,
+    Page<Job> searchJobs(@Param("jobTitle") String jobTitle,
+                         @Param("locationCountry") String locationCountry,
+                         @Param("locationCity") String locationCity,
                          @Param("companyId") Long companyId,
-                         @Param("employmentType") String employmentType,
+                         @Param("jobType") String jobType,
                          Pageable pageable);
+
+    @Query(value = "Select * from job where " +
+            "company_id = :companyId", nativeQuery = true)
+    Page<Job> getJobPostedByCompany(
+            @Param("companyId") Long companyId,
+            Pageable pageable);
+
+    Optional<Job> findByIdAndDeletedAtIsNull(Long id);
+
+    Optional<Job> findByCompanyIdAndDeletedAtIsNull(Long id);
 }

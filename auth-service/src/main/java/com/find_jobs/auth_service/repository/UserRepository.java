@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query(value = "select * from users where username =?1 and is_deleted = false", nativeQuery = true)
+    @Query(value = "SELECT * from users WHERE :username and deleted_at IS NULL", nativeQuery = true)
     Optional<User> findByUsername(String username);
 
     Boolean existsByEmail(String email);

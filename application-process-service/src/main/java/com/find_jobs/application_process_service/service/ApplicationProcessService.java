@@ -11,16 +11,20 @@ import com.find_jobs.application_process_service.dto.response.JobResponseDTO;
 import com.find_jobs.application_process_service.dto.response.UserResponseDTO;
 import com.find_jobs.application_process_service.entity.Application;
 import com.find_jobs.application_process_service.entity.ApplicationStatusHistory;
-import com.find_jobs.application_process_service.entity.User;
 import com.find_jobs.application_process_service.entity.enums.ApplicationStatus;
 import com.find_jobs.application_process_service.exception.DataExistException;
 import com.find_jobs.application_process_service.exception.NotFoundException;
 import com.find_jobs.application_process_service.repository.ApplicationProcessRepository;
 import com.find_jobs.application_process_service.util.Response;
+import com.find_jobs.shared_module.dto.request.NotificationPayloadRequestDTO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,11 @@ import java.util.List;
 
 @Service
 public class ApplicationProcessService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationProcessService.class);
+
+    @Value("${spring.kafka.topic.notification}")
+    private String notificationTopic;
 
     @Autowired
     ApplicationProcessRepository applicationProcessRepository;
@@ -44,10 +53,14 @@ public class ApplicationProcessService {
     @Autowired
     AuthServiceClient authServiceClient;
 
+    @Autowired
+    KafkaTemplate<String, NotificationPayloadRequestDTO> kafkaTemplate;
+
     @Transactional
     public Response<Object> applyJob(ApplicationRequestDTO applicationRequestDTO) {
 
         Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLoginData();
+        Response<CompanyResponseDTO> company = companyServiceClient.getCompanyProfile(applicationRequestDTO.getCompanyId());
 
         // Check if the specific job id is already applied, then throw an error
         boolean alreadyApplied = applicationProcessRepository.existsByJobIdAndApplicantId(applicationRequestDTO.getJobId(), userCurrentlyLogin.getData().getId());
@@ -65,6 +78,12 @@ public class ApplicationProcessService {
                 .build();
 
         Application savedApplication = applicationProcessRepository.save(application);
+
+        // Send notification to employer via kafka
+        NotificationPayloadRequestDTO payload = new NotificationPayloadRequestDTO(company.getData().getEmail(), "Job Applied", "An applicant has applied for your job.");
+
+        logger.info(String.format("#### -> Producing message -> %s", payload));
+        kafkaTemplate.send(notificationTopic, payload);
 
         // add data application to log
         applicationStatusHistoryService.logApplicationStatusChange(savedApplication.getId(),

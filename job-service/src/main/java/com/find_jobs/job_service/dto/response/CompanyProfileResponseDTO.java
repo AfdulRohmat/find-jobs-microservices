@@ -1,10 +1,10 @@
-package com.find_jobs.job_service.entity;
+package com.find_jobs.job_service.dto.response;
 
 
 import lombok.*;
 
 @Data
-public class CompanyProfile {
+public class CompanyProfileResponseDTO {
 
     private Long id;
     private String name;

@@ -32,16 +32,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "is_deleted")
-    private Boolean isDeleted;
-
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    @Column(name = "deleted_at")
+    private Timestamp deletedAt;
 
 }

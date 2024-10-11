@@ -1,10 +1,7 @@
 package com.find_jobs.job_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,36 +15,49 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "job")
+@Builder
 public class Job {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String description;
-    private String location;
-    private Long companyId;
-    private String salary;
-    private String employmentType;
-    private String experienceLevel;
-    private String yearsOfExperience;
-    private LocalDate postedDate;
-    private LocalDate expiryDate;
+    private String jobTitle;
+    private String tags;
+    private String jobRole;
+    private Double minSalary;
+    private Double maxSalary;
+    private String salaryType;
+    private String education;
+    private String experience;
+    private String jobType;
+    private Integer vacancies;
 
     @ElementCollection
     private List<String> skills;
 
-    private String industry;
-    private String jobFunction;
-    private String educationLevel;
+    private LocalDate expirationDate;
+    private String jobLevel;
+    private String locationCountry;
+    private String locationCity;
+    private Boolean enableRemote;
+
+    @ElementCollection
+    private List<String> jobBenefits;
+
+    private String jobDescription;
+    private Long companyId;
 
     private Long createdByUserId;
 
-    @Column(nullable = false, updatable = false)
     @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
 
     @UpdateTimestamp
+    @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    @Column(name = "deleted_at")
+    private Timestamp deletedAt;
 
 }

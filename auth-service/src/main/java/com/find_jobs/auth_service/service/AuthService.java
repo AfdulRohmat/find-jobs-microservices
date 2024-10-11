@@ -71,7 +71,6 @@ public class AuthService {
             throw new DataExistException(Constant.Message.EXIST_DATA_MESSAGE);
         }
 
-
         // generate bcrypt password
         String hashedPassword = encoder.encode(registerRequestDTO.getPassword());
 
@@ -80,7 +79,6 @@ public class AuthService {
         user.setUsername(registerRequestDTO.getUsername());
         user.setEmail(registerRequestDTO.getEmail());
         user.setPassword(hashedPassword);
-        user.setIsDeleted(false);
         user.setRole(registerRequestDTO.getRole());
 
         userRepository.save(user);
@@ -159,5 +157,23 @@ public class AuthService {
                 .data(userResponseDTO)
                 .build();
 
+    }
+
+    @Transactional
+    public Response<Object> getUserById(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE));
+
+        UserResponseDTO userResponseDTO = UserResponseDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .role(user.getRole())
+                .build();
+
+        return Response.builder()
+                .responseCode(Constant.Response.SUCCESS_CODE)
+                .responseMessage(Constant.Response.SUCCESS_MESSAGE)
+                .data(userResponseDTO)
+                .build();
     }
 }

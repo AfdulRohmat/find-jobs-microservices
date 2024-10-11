@@ -2,7 +2,7 @@ package com.find_jobs.company_service.security.service;
 
 
 import com.find_jobs.company_service.client.AuthServiceClient;
-import com.find_jobs.company_service.entity.User;
+import com.find_jobs.company_service.dto.response.UserResponseDTO;
 import com.find_jobs.company_service.util.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,10 +18,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Response<User> response = authServiceClient.getUserLogin();
+        Response<UserResponseDTO> response = authServiceClient.getUserLogin();
 
         if (response.getResponseCode() == 200) {
-            User user = response.getData();
+            UserResponseDTO user = response.getData();
 
             return org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
                     .password(user.getPassword())  // Password should be set if available, or use a default

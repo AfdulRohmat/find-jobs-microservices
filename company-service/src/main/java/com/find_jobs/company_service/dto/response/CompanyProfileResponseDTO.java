@@ -10,6 +10,7 @@ import java.sql.Timestamp;
 public class CompanyProfileResponseDTO {
     private Long id;
     private String name;
+    private String email;
     private String street;
     private String city;
     private String state;

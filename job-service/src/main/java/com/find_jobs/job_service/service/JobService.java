@@ -4,10 +4,11 @@ import com.find_jobs.job_service.client.AuthServiceClient;
 import com.find_jobs.job_service.client.CompanyServiceClient;
 import com.find_jobs.job_service.constant.Constant;
 import com.find_jobs.job_service.dto.request.JobRequestDTO;
+import com.find_jobs.job_service.dto.request.UpdateJobRequestDTO;
 import com.find_jobs.job_service.dto.response.JobResponseDTO;
-import com.find_jobs.job_service.entity.CompanyProfile;
+import com.find_jobs.job_service.dto.response.CompanyProfileResponseDTO;
 import com.find_jobs.job_service.entity.Job;
-import com.find_jobs.job_service.entity.User;
+import com.find_jobs.job_service.dto.response.UserResponseDTO;
 import com.find_jobs.job_service.exception.NotFoundException;
 import com.find_jobs.job_service.repository.JobRepository;
 import com.find_jobs.job_service.utils.Response;
@@ -18,8 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class JobService {
@@ -32,35 +33,37 @@ public class JobService {
     @Autowired
     private CompanyServiceClient companyServiceClient;
 
-
     @Transactional
     public Response<Object> createJob(JobRequestDTO jobRequestDTO) {
-        Response<User> userCurrentlyLogin = authServiceClient.getUserLogin();
+        Response<UserResponseDTO> userCurrentlyLogin = authServiceClient.getUserLogin();
 
-        Response<CompanyProfile> companyProfile = companyServiceClient.getCompanyById(jobRequestDTO.getCompanyId());
+        Response<CompanyProfileResponseDTO> companyProfile = companyServiceClient.getCompanyById(jobRequestDTO.getCompanyId());
         if (companyProfile.getData() == null) {
             throw new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE);
         }
 
-
-        Job job = new Job();
-
-        job.setTitle(jobRequestDTO.getTitle());
-        job.setDescription(jobRequestDTO.getDescription());
-        job.setLocation(jobRequestDTO.getLocation());
-        job.setCompanyId(companyProfile.getData().getId());
-        job.setSalary(jobRequestDTO.getSalary());
-        job.setEmploymentType(jobRequestDTO.getEmploymentType());
-        job.setExperienceLevel(jobRequestDTO.getExperienceLevel());
-        job.setYearsOfExperience(jobRequestDTO.getYearsOfExperience());
-        job.setPostedDate(jobRequestDTO.getPostedDate());
-        job.setExpiryDate(jobRequestDTO.getApplicationDeadline());
-        job.setSkills(jobRequestDTO.getSkills());
-        job.setIndustry(jobRequestDTO.getIndustry());
-        job.setJobFunction(jobRequestDTO.getJobFunction());
-        job.setEducationLevel(jobRequestDTO.getEducationLevel());
-
-        job.setCreatedByUserId(userCurrentlyLogin.getData().getId());
+        Job job = Job.builder()
+                .jobTitle(jobRequestDTO.getJobTitle())
+                .tags(jobRequestDTO.getTags())
+                .jobRole(jobRequestDTO.getJobRole())
+                .minSalary(jobRequestDTO.getMinSalary())
+                .maxSalary(jobRequestDTO.getMaxSalary())
+                .salaryType(jobRequestDTO.getSalaryType())
+                .education(jobRequestDTO.getEducation())
+                .experience(jobRequestDTO.getExperience())
+                .jobType(jobRequestDTO.getJobType())
+                .vacancies(jobRequestDTO.getVacancies())
+                .skills(jobRequestDTO.getSkills())
+                .expirationDate(jobRequestDTO.getExpirationDate())
+                .jobLevel(jobRequestDTO.getJobLevel())
+                .locationCountry(jobRequestDTO.getLocationCountry())
+                .locationCity(jobRequestDTO.getLocationCity())
+                .enableRemote(jobRequestDTO.getEnableRemote())
+                .jobBenefits(jobRequestDTO.getJobBenefits())
+                .jobDescription(jobRequestDTO.getJobDescription())
+                .companyId(jobRequestDTO.getCompanyId())
+                .createdByUserId(userCurrentlyLogin.getData().getId())
+                .build();
 
         Job savedJob = jobRepository.save(job);
 
@@ -73,19 +76,20 @@ public class JobService {
 
     @Transactional
     public Response<Object> getAllJobs(int page, int size,
-                                       String search,
-                                       String location,
+                                       String jobTitle,
+                                       String locationCountry,
+                                       String locationCity,
                                        Long companyId,
-                                       String employmentType) {
+                                       String jobType) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Job> getAllJobs = jobRepository.searchJobs(search, location, companyId, employmentType, pageable);
+        Page<Job> getAllJobs = jobRepository.searchJobs(
+                jobTitle, locationCountry, locationCity, companyId, jobType, pageable);
 
         List<JobResponseDTO> jobResponseDTOs = getAllJobs.stream()
                 .map(this::mapToJobResponseDTO)
                 .toList();
-
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
@@ -98,31 +102,57 @@ public class JobService {
                 .build();
     }
 
+    @Transactional
+    public Response<Object> getJobPostedByCompany(int page, int size,
+                                                  Long companyId) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Job> getJobsPostedByCompany = jobRepository.getJobPostedByCompany(companyId, pageable);
+
+        List<JobResponseDTO> jobResponseDTOs = getJobsPostedByCompany.stream()
+                .map(this::mapToJobResponseDTO)
+                .toList();
+
+        return Response.builder()
+                .responseCode(Constant.Response.SUCCESS_CODE)
+                .responseMessage(Constant.Response.SUCCESS_MESSAGE)
+                .data(jobResponseDTOs)
+                .pageNumber(getJobsPostedByCompany.getNumber())
+                .pageSize(getJobsPostedByCompany.getSize())
+                .totalPage(getJobsPostedByCompany.getTotalPages())
+                .totalData(getJobsPostedByCompany.getTotalElements())
+                .build();
+    }
+
 
     @Transactional
-    public Response<Object> getJobById(Long id) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new NotFoundException("Data not found"));
+    public Response<Object> getJobById(Long jobId) {
+        Job job = jobRepository.findByIdAndDeletedAtIsNull(jobId).orElseThrow(() -> new NotFoundException("Data not found"));
 
-        Response<CompanyProfile> companyProfile = companyServiceClient.getCompanyById(job.getCompanyId());
+        Response<CompanyProfileResponseDTO> companyProfile = companyServiceClient.getCompanyById(job.getCompanyId());
 
         JobResponseDTO data = JobResponseDTO.builder()
                 .id(job.getId())
-                .title(job.getTitle())
-                .description(job.getDescription())
-                .location(job.getLocation())
-                .companyId(job.getCompanyId())
-                .salary(job.getSalary())
-                .employmentType(job.getEmploymentType())
-                .experienceLevel(job.getExperienceLevel())
-                .yearsOfExperience(job.getYearsOfExperience())
-                .postedDate(job.getPostedDate())
-                .expiryDate(job.getExpiryDate())
+                .jobTitle(job.getJobTitle())
+                .tags(job.getTags())
+                .jobRole(job.getJobRole())
+                .minSalary(job.getMinSalary())
+                .maxSalary(job.getMaxSalary())
+                .salaryType(job.getSalaryType())
+                .education(job.getEducation())
+                .experience(job.getExperience())
+                .jobType(job.getJobType())
+                .vacancies(job.getVacancies())
                 .skills(job.getSkills())
-                .industry(job.getIndustry())
-                .jobFunction(job.getJobFunction())
-                .educationLevel(job.getEducationLevel())
-                .companyId(job.getCompanyId())
-                .company(companyProfile.getData())
+                .expirationDate(job.getExpirationDate())
+                .jobLevel(job.getJobLevel())
+                .locationCountry(job.getLocationCountry())
+                .locationCity(job.getLocationCity())
+                .enableRemote(job.getEnableRemote())
+                .jobBenefits(job.getJobBenefits())
+                .jobDescription(job.getJobDescription())
+                .companyId(companyProfile.getData())
+                .createdByUserId(job.getCreatedByUserId())
                 .build();
 
         return Response.builder()
@@ -133,28 +163,32 @@ public class JobService {
     }
 
     @Transactional
-    public Response<Object> updateJob(Long id, JobRequestDTO jobRequestDTO) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new NotFoundException("Data not found"));
+    public Response<Object> updateJob(Long id, UpdateJobRequestDTO updateJobRequestDTO) {
+        Job job = jobRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> new NotFoundException("Data not found"));
 
-        Response<CompanyProfile> companyProfile = companyServiceClient.getCompanyById(jobRequestDTO.getCompanyId());
+        Response<CompanyProfileResponseDTO> companyProfile = companyServiceClient.getCompanyById(updateJobRequestDTO.getCompanyId());
         if (companyProfile.getData() == null) {
             throw new NotFoundException(Constant.Message.NOT_FOUND_DATA_MESSAGE);
         }
 
-        job.setTitle(jobRequestDTO.getTitle());
-        job.setDescription(jobRequestDTO.getDescription());
-        job.setLocation(jobRequestDTO.getLocation());
-        job.setCompanyId(companyProfile.getData().getId());
-        job.setSalary(jobRequestDTO.getSalary());
-        job.setEmploymentType(jobRequestDTO.getEmploymentType());
-        job.setExperienceLevel(jobRequestDTO.getExperienceLevel());
-        job.setYearsOfExperience(jobRequestDTO.getYearsOfExperience());
-        job.setPostedDate(jobRequestDTO.getPostedDate());
-        job.setExpiryDate(jobRequestDTO.getApplicationDeadline());
-        job.setSkills(jobRequestDTO.getSkills());
-        job.setIndustry(jobRequestDTO.getIndustry());
-        job.setJobFunction(jobRequestDTO.getJobFunction());
-        job.setEducationLevel(jobRequestDTO.getEducationLevel());
+        job.setJobTitle(updateJobRequestDTO.getJobTitle());
+        job.setTags(updateJobRequestDTO.getTags());
+        job.setJobRole(updateJobRequestDTO.getJobRole());
+        job.setMinSalary(updateJobRequestDTO.getMinSalary());
+        job.setMaxSalary(updateJobRequestDTO.getMaxSalary());
+        job.setSalaryType(updateJobRequestDTO.getSalaryType());
+        job.setEducation(updateJobRequestDTO.getEducation());
+        job.setExperience(updateJobRequestDTO.getExperience());
+        job.setJobType(updateJobRequestDTO.getJobType());
+        job.setVacancies(updateJobRequestDTO.getVacancies());
+        job.setSkills(updateJobRequestDTO.getSkills());
+        job.setExpirationDate(updateJobRequestDTO.getExpirationDate());
+        job.setJobLevel(updateJobRequestDTO.getJobLevel());
+        job.setLocationCountry(updateJobRequestDTO.getLocationCountry());
+        job.setLocationCity(updateJobRequestDTO.getLocationCity());
+        job.setEnableRemote(updateJobRequestDTO.getEnableRemote());
+        job.setJobBenefits(updateJobRequestDTO.getJobBenefits());
+        job.setJobDescription(updateJobRequestDTO.getJobDescription());
 
         Job updatedJob = jobRepository.save(job);
 
@@ -167,9 +201,10 @@ public class JobService {
 
     @Transactional
     public Response<Object> deleteJob(Long id) {
-        Job job = jobRepository.findById(id).orElseThrow(() -> new NotFoundException("Data not found"));
+        Job job = jobRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() -> new NotFoundException("Data not found"));
 
-        jobRepository.delete(job);
+        job.setDeletedAt(new Timestamp(System.currentTimeMillis()));
+        jobRepository.save(job);
 
         return Response.builder()
                 .responseCode(Constant.Response.SUCCESS_CODE)
@@ -180,25 +215,30 @@ public class JobService {
 
     private JobResponseDTO mapToJobResponseDTO(Job job) {
 
-        Response<CompanyProfile> companyProfile = companyServiceClient.getCompanyById(job.getCompanyId());
+        Response<CompanyProfileResponseDTO> companyProfile = companyServiceClient.getCompanyById(job.getCompanyId());
 
         return JobResponseDTO.builder()
                 .id(job.getId())
-                .title(job.getTitle())
-                .description(job.getDescription())
-                .location(job.getLocation())
-                .employmentType(job.getEmploymentType())
-                .salary(job.getSalary())
-                .experienceLevel(job.getExperienceLevel())
-                .yearsOfExperience(job.getYearsOfExperience())
-                .postedDate(job.getPostedDate())
-                .expiryDate(job.getExpiryDate())
+                .jobTitle(job.getJobTitle())
+                .tags(job.getTags())
+                .jobRole(job.getJobRole())
+                .minSalary(job.getMinSalary())
+                .maxSalary(job.getMaxSalary())
+                .salaryType(job.getSalaryType())
+                .education(job.getEducation())
+                .experience(job.getExperience())
+                .jobType(job.getJobType())
+                .vacancies(job.getVacancies())
                 .skills(job.getSkills())
-                .industry(job.getIndustry())
-                .jobFunction(job.getJobFunction())
-                .educationLevel(job.getEducationLevel())
-                .companyId(job.getCompanyId())
-                .company(companyProfile.getData()) // Assuming Job has a reference to CompanyProfile
+                .expirationDate(job.getExpirationDate())
+                .jobLevel(job.getJobLevel())
+                .locationCountry(job.getLocationCountry())
+                .locationCity(job.getLocationCity())
+                .enableRemote(job.getEnableRemote())
+                .jobBenefits(job.getJobBenefits())
+                .jobDescription(job.getJobDescription())
+                .companyId(companyProfile.getData())
+                .createdByUserId(job.getCreatedByUserId())
                 .build();
     }
 }

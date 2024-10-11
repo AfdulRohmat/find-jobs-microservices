@@ -8,3 +8,4 @@ job-service = 8095
 application-process-service = 8096
 kafka-producer-service = 8097
 storage-service = 8098
+notification-service = 8099
